@@ -3,21 +3,20 @@ import ReactMapGL from "react-map-gl";
 import { getCenter } from "geolib";
 
 function Map({ searchResults }) {
-  const [viewport, setViewport] = useState({
-    width: "100%",
-    height: "100%",
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 11,
-  });
-
   const coordinate = searchResults.map((result) => ({
-    longtitude: searchResults.long,
+    longitude: result.long,
     latitude: result.lat,
   }));
 
-  const center = [];
+  const center = getCenter(coordinate);
 
+  const [viewport, setViewport] = useState({
+    width: "100%",
+    height: "100%",
+    latitude: center.latitude,
+    longitude: center.longitude,
+    zoom: 11,
+  });
   return (
     <ReactMapGL
       mapStyle="mapbox://styles/hori0329/cksspt03v29t519p9qnwgelwc"
