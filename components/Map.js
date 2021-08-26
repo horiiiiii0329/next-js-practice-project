@@ -1,8 +1,10 @@
 import { useState } from "react";
-import ReactMapGL from "react-map-gl";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { getCenter } from "geolib";
 
 function Map({ searchResults }) {
+  const [selectedLocation, setSelectedlocation] = useState({});
+
   const coordinate = searchResults.map((result) => ({
     longitude: result.long,
     latitude: result.lat,
@@ -23,7 +25,40 @@ function Map({ searchResults }) {
       mapboxApiAccessToken={process.env.mapbox_key}
       {...viewport}
       onViewportChange={(nextViewport) => setViewport(nextViewport)}
-    ></ReactMapGL>
+    >
+      {searchResults.map((result) => (
+        <div key={result.long}>
+          <Marker
+            longitude={result.long}
+            latitude={result.lat}
+            offsetLeft={-20}
+            offsetTop={-10}
+            off
+          >
+            <p
+              onClick={() => setSelectedlocation(result)}
+              className="cursor-pointer animate-bounce"
+              aria-lebel="push-pin"
+            >
+              👩
+            </p>
+          </Marker>
+
+          {selectedLocation.long === result.long ? (
+            <Popup
+              onClose={() => setSelectedlocation({})}
+              closeOnClick={true}
+              latitude={result.lat}
+              longitude={result.long}
+            >
+              {result.title}
+            </Popup>
+          ) : (
+            false
+          )}
+        </div>
+      ))}
+    </ReactMapGL>
   );
 }
 
